@@ -1,11 +1,18 @@
 namespace GestionTienda;
-
 public class Tienda
 {
     private List<Producto> productos;
     public Tienda()
     {
-        productos = new List<Producto>();
+        productos = new List<Producto>
+        {
+            new Producto("Coca cola",1800,Categoria.Bedidas),
+            new Producto("Leche LaSerenisima",1200,Categoria.Lacteos),
+            new Producto("Yogur",900,Categoria.Lacteos),
+            new Producto("Salame Paladini",11000,Categoria.Fiambres),
+            new Producto("Papa",1000,Categoria.Verduras)
+        };
+
     }
     
     public void AgregarProducto(Producto producto)

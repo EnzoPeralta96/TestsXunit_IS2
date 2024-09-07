@@ -1,5 +1,4 @@
 ﻿namespace GestionTienda;
-
 public enum Categoria
 {
     Carnes,
