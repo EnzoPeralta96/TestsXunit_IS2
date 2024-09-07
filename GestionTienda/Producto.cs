@@ -24,6 +24,11 @@ public class Producto
     public string Nombre { get => nombre;  }
     public double Precio { get => precio;  }
     public Categoria Categoria { get => categoria; }
+
+    public void ModificarPrecio(double precio)
+    {
+        this.precio = precio;
+    }
 }
 
 
