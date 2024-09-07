@@ -22,15 +22,6 @@ public class TiendaTest
     }
 
     [Fact]
-    public void AgregarProductoNull()
-    {
-        Producto productoNuevo = null;
-
-        Assert.Throws<ArgumentNullException>(() => tiendaGlobal.AgregarProducto(productoNuevo));
-    }
-
-    [Fact]
-
     public void BuscarProducto()
     {
         var CocaCola = new Producto("Coca cola", 1800, Categoria.Bedidas);
@@ -43,30 +34,56 @@ public class TiendaTest
     }
 
     [Fact]
-    public void BuscarProductoException()
-    {
-        var productoBuscado = tiendaGlobal.BuscarProducto("Fideos");
-
-        Assert.Null(productoBuscado);
-    }
-
-    [Fact]
     public void EliminarProducto()
     {
         string nombre = "Coca cola";
-
         int cantidadElimnados = tiendaGlobal.EliminarProducto(nombre);
-
         Assert.Equal(1, cantidadElimnados);
     }
 
     [Fact]
-    public void EliminarProductoNoExistente()
+    public void ModificarPrecio()
     {
-        string nombre = "Shampoo";
 
-        int cantidadElimnados = tiendaGlobal.EliminarProducto(nombre);
+        double precioNuevo = 1500;
+        string nombreProducto = "Coca cola";
+        tiendaGlobal.ModificarPrecio(nombreProducto, precioNuevo);
 
-        Assert.Equal(0, cantidadElimnados);
+        var productoModificado = tiendaGlobal.BuscarProducto(nombreProducto);
+        double precioActual = productoModificado.Precio;
+
+        Assert.Equal(precioNuevo, precioActual);
     }
+
+
+    [Fact]
+    public void AgregarProducto_Exception()
+    {
+        Producto productoNuevo = null;
+        Assert.Throws<ArgumentNullException>(() => tiendaGlobal.AgregarProducto(productoNuevo));
+    }
+
+    [Fact]
+    public void BuscarProducto_Exception()
+    {
+        var nombreProducto = "Fideos";
+        Assert.Throws<KeyNotFoundException>(() => tiendaGlobal.BuscarProducto(nombreProducto));
+    }
+
+
+    [Fact]
+    public void EliminarProducto_Exception()
+    {
+        string nombreProducto = "Shampoo";
+        Assert.Throws<KeyNotFoundException>(() => tiendaGlobal.EliminarProducto(nombreProducto));
+    }
+
+    [Fact]
+    public void ModificarPrecio_Exception()
+    {
+        string nombreProducto = "Coca cola";
+        double nuevoPrecio = -1500;
+        Assert.Throws<ArgumentException>(() => tiendaGlobal.ModificarPrecio(nombreProducto, nuevoPrecio));
+    }
+
 }
