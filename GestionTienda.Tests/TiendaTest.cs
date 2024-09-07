@@ -13,33 +13,41 @@ public class TiendaTest
     public void AgregarProducto()
     {
         //Given
-        var productoNuevo = new Producto("Arroz",500,Categoria.NoPercedero);
+        var productoNuevo = new Producto("Arroz", 500, Categoria.NoPercedero);
         tiendaGlobal.AgregarProducto(productoNuevo);
 
         var productoBuscado = tiendaGlobal.BuscarProducto("Arroz");
 
-        Assert.Equal(productoNuevo,productoBuscado);
+        Assert.Equal(productoNuevo, productoBuscado);
+    }
+
+    [Fact]
+    public void AgregarProductoNull()
+    {
+        Producto productoNuevo = null;
+
+        Assert.Throws<ArgumentNullException>(() => tiendaGlobal.AgregarProducto(productoNuevo));
     }
 
     [Fact]
 
     public void BuscarProducto()
     {
-       var CocaCola = new Producto("Coca cola",1800,Categoria.Bedidas);
+        var CocaCola = new Producto("Coca cola", 1800, Categoria.Bedidas);
 
-       var productoBuscado = tiendaGlobal.BuscarProducto("Coca cola");
+        var productoBuscado = tiendaGlobal.BuscarProducto("Coca cola");
 
-       Assert.Equal(CocaCola.Nombre,productoBuscado.Nombre);
-       Assert.Equal(CocaCola.Precio, productoBuscado.Precio);
-       Assert.Equal(CocaCola.Categoria,productoBuscado.Categoria);
+        Assert.Equal(CocaCola.Nombre, productoBuscado.Nombre);
+        Assert.Equal(CocaCola.Precio, productoBuscado.Precio);
+        Assert.Equal(CocaCola.Categoria, productoBuscado.Categoria);
     }
 
     [Fact]
     public void BuscarProductoException()
     {
-       var productoBuscado = tiendaGlobal.BuscarProducto("Fideos");
+        var productoBuscado = tiendaGlobal.BuscarProducto("Fideos");
 
-       Assert.Null(productoBuscado);
+        Assert.Null(productoBuscado);
     }
 
     [Fact]
@@ -49,7 +57,7 @@ public class TiendaTest
 
         int cantidadElimnados = tiendaGlobal.EliminarProducto(nombre);
 
-        Assert.Equal(1,cantidadElimnados);
+        Assert.Equal(1, cantidadElimnados);
     }
 
     [Fact]
@@ -59,6 +67,6 @@ public class TiendaTest
 
         int cantidadElimnados = tiendaGlobal.EliminarProducto(nombre);
 
-        Assert.Equal(0,cantidadElimnados);
+        Assert.Equal(0, cantidadElimnados);
     }
 }

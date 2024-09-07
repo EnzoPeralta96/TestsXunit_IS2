@@ -14,10 +14,24 @@ public class Tienda
         };
 
     }
-    
+
     public void AgregarProducto(Producto producto)
     {
-        productos.Add(producto);
+        try
+        {
+            if (producto != null)
+            {
+                productos.Add(producto);
+            }else
+            {
+               throw new ArgumentNullException(nameof(Producto),"No se puede agregar un producto null"); 
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error:{ex.Message}");
+            throw;
+        }
     }
 
     //Find() : Si no encuentra el objeto, retorna null
