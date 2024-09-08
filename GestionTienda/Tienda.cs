@@ -1,27 +1,20 @@
 namespace GestionTienda;
 public class Tienda
 {
-    private List<Producto> productos;
-    public Tienda()
-    {
-        productos = new List<Producto>
-        {
-            new Producto("Coca cola",1800,Categoria.Bedidas),
-            new Producto("Leche LaSerenisima",1200,Categoria.Lacteos),
-            new Producto("Yogur",900,Categoria.Lacteos),
-            new Producto("Salame Paladini",11000,Categoria.Fiambres),
-            new Producto("Papa",1000,Categoria.Verduras)
-        };
+    private readonly IProductoRepositorio productoRepositorio;
 
+    public Tienda(IProductoRepositorio productoRepositorio)
+    {
+        this.productoRepositorio = productoRepositorio;
     }
 
-    public void AgregarProducto(Producto producto)
+    public void AgregarProducto(IProducto producto)
     {
         try
         {
             if (producto != null)
             {
-                productos.Add(producto);
+                productoRepositorio.AgregarProducto(producto);
             }
             else
             {
@@ -36,11 +29,11 @@ public class Tienda
     }
 
     //Find() : Si no encuentra el objeto, retorna null
-    public Producto BuscarProducto(string nombre)
+    public IProducto BuscarProducto(string nombre)
     {
         try
         {
-            var productoBuscado = productos.Find(p => p.Nombre == nombre);
+            var productoBuscado = productoRepositorio.BuscarProducto(nombre);
             if (productoBuscado != null)
             {
                 return productoBuscado;
@@ -57,22 +50,23 @@ public class Tienda
         }
     }
 
-    public void  ModificarPrecio(string nombre, double nuevoPrecio)
+    public void ModificarPrecio(string nombre, double nuevoPrecio)
     {
         try
         {
-            var producto = BuscarProducto(nombre);
+            var producto = productoRepositorio.BuscarProducto(nombre);
             if (nuevoPrecio > 0)
             {
                 producto.ModificarPrecio(nuevoPrecio);
-            }else
+            }
+            else
             {
                 throw new ArgumentException("No se puede ingresar un precio negativo");
             }
         }
-        catch (Exception Ex)
+        catch (Exception ex)
         {
-            Console.WriteLine($"Error:{Ex.Message}");
+            Console.WriteLine($"Error:{ex.Message}");
             throw;
         }
     }
@@ -82,7 +76,7 @@ public class Tienda
     {
         try
         {
-            int cantidadEliminados = productos.RemoveAll(p => p.Nombre == nombre);
+            int cantidadEliminados = productoRepositorio.EliminarProducto(nombre);
             if (cantidadEliminados > 0)
             {
                 return cantidadEliminados;
@@ -95,6 +89,29 @@ public class Tienda
         catch (System.Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
+            throw;
+        }
+    }
+
+    public void Aplicar_descuento(string nombre, int porcentaje)
+    {
+        try
+        {
+            var producto = productoRepositorio.BuscarProducto(nombre);
+            if (porcentaje > 0)
+            {
+                double nuevoPrecio = producto.Precio - (producto.Precio * porcentaje) / 100;
+                producto.ModificarPrecio(nuevoPrecio);
+            }
+            else
+            {
+                throw new ArgumentException("No se puede ingresar un porcentaje negativo");
+            }
+
+        }
+        catch (System.Exception ex)
+        {
+            Console.WriteLine($"Error:{ex.Message}");
             throw;
         }
     }

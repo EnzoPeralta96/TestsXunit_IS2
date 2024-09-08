@@ -5,11 +5,11 @@ public enum Categoria
     Lacteos,
     Verduras,
     Fiambres,
-    Bedidas,
+    Bebidas,
     Limpieza,
     NoPercedero
 }
-public class Producto
+public class Producto: IProducto
 {
     private string nombre;
     private double precio;
