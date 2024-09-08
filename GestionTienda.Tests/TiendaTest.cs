@@ -16,7 +16,7 @@ public class TiendaTest
     public void AgregarProducto()
     {
         //Given
-        var productoNuevo = new Producto("Arroz", 500, Categoria.NoPercedero);
+        var productoNuevo = new Producto("Arroz", 500, Categoria.NoPerecedero);
         tiendaGlobal.AgregarProducto(productoNuevo);
 
         var productoBuscado = tiendaGlobal.BuscarProducto("Arroz");
@@ -164,7 +164,7 @@ public class TiendaTest
         string nombre = "Yogur";
         var tienda = new Tienda(mockRepositorio.Object);
         int cantidadEliminado = tienda.EliminarProducto(nombre);
-        
+
         Assert.Equal(1,cantidadEliminado);
     }
 
