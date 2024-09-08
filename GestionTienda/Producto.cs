@@ -7,7 +7,7 @@ public enum Categoria
     Fiambres,
     Bebidas,
     Limpieza,
-    NoPercedero
+    NoPerecedero
 }
 public class Producto: IProducto
 {
