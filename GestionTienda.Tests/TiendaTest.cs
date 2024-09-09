@@ -2,14 +2,13 @@ using Moq;
 
 namespace GestionTienda.Tests;
 
-public class TiendaTest
+public class TiendaTest:IClassFixture<TiendaFixture>
 {
-    private Tienda tiendaGlobal;
+    private readonly TiendaFixture _fixture;
 
-    public TiendaTest()
+    public TiendaTest(TiendaFixture fixture)
     {
-        var productoRepositorio = new ProductoRepositorio();
-        tiendaGlobal = new Tienda(productoRepositorio);
+        _fixture = fixture;
     }
 
     [Fact]
@@ -17,9 +16,9 @@ public class TiendaTest
     {
         //Given
         var productoNuevo = new Producto("Arroz", 500, Categoria.NoPerecedero);
-        tiendaGlobal.AgregarProducto(productoNuevo);
+        _fixture.Tienda.AgregarProducto(productoNuevo);
 
-        var productoBuscado = tiendaGlobal.BuscarProducto("Arroz");
+        var productoBuscado = _fixture.Tienda.BuscarProducto("Arroz");
 
         Assert.Equal(productoNuevo, productoBuscado);
     }
@@ -29,7 +28,7 @@ public class TiendaTest
     {
         var CocaCola = new Producto("Coca cola", 1800, Categoria.Bebidas);
 
-        var productoBuscado = tiendaGlobal.BuscarProducto("Coca cola");
+        var productoBuscado = _fixture.Tienda.BuscarProducto("Coca cola");
 
         Assert.Equal(CocaCola.Nombre, productoBuscado.Nombre);
         Assert.Equal(CocaCola.Precio, productoBuscado.Precio);
@@ -40,7 +39,7 @@ public class TiendaTest
     public void EliminarProducto()
     {
         string nombre = "Coca cola";
-        int cantidadElimnados = tiendaGlobal.EliminarProducto(nombre);
+        int cantidadElimnados = _fixture.Tienda.EliminarProducto(nombre);
         Assert.Equal(1, cantidadElimnados);
     }
 
@@ -49,10 +48,10 @@ public class TiendaTest
     {
 
         double precioNuevo = 1500;
-        string nombreProducto = "Coca cola";
-        tiendaGlobal.ModificarPrecio(nombreProducto, precioNuevo);
+        string nombreProducto = "Arroz";
+        _fixture.Tienda.ModificarPrecio(nombreProducto, precioNuevo);
 
-        var productoModificado = tiendaGlobal.BuscarProducto(nombreProducto);
+        var productoModificado = _fixture.Tienda.BuscarProducto(nombreProducto);
         double precioActual = productoModificado.Precio;
 
         Assert.Equal(precioNuevo, precioActual);
@@ -63,14 +62,14 @@ public class TiendaTest
     public void AgregarProducto_Exception()
     {
         Producto productoNuevo = null;
-        Assert.Throws<ArgumentNullException>(() => tiendaGlobal.AgregarProducto(productoNuevo));
+        Assert.Throws<ArgumentNullException>(() => _fixture.Tienda.AgregarProducto(productoNuevo));
     }
 
     [Fact]
     public void BuscarProducto_Exception()
     {
         var nombreProducto = "Fideos";
-        Assert.Throws<KeyNotFoundException>(() => tiendaGlobal.BuscarProducto(nombreProducto));
+        Assert.Throws<KeyNotFoundException>(() => _fixture.Tienda.BuscarProducto(nombreProducto));
     }
 
 
@@ -78,7 +77,7 @@ public class TiendaTest
     public void EliminarProducto_Exception()
     {
         string nombreProducto = "Shampoo";
-        Assert.Throws<KeyNotFoundException>(() => tiendaGlobal.EliminarProducto(nombreProducto));
+        Assert.Throws<KeyNotFoundException>(() => _fixture.Tienda.EliminarProducto(nombreProducto));
     }
 
     [Fact]
@@ -86,7 +85,7 @@ public class TiendaTest
     {
         string nombreProducto = "Coca cola";
         double nuevoPrecio = -1500;
-        Assert.Throws<ArgumentException>(() => tiendaGlobal.ModificarPrecio(nombreProducto, nuevoPrecio));
+        Assert.Throws<ArgumentException>(() => _fixture.Tienda.ModificarPrecio(nombreProducto, nuevoPrecio));
     }
 
     [Fact]
