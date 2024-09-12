@@ -6,11 +6,15 @@ public class ProductoRepositorio : IProductoRepositorio
     {
         productos = new List<IProducto>
         {
-            new Producto("Coca cola",1800,Categoria.Bebidas),
-            new Producto("Leche LaSerenisima",1200,Categoria.Lacteos),
+            new Producto("Leche LaSerenisima",1800,Categoria.Lacteos),
             new Producto("Yogur",900,Categoria.Lacteos),
+            new Producto("Coca cola",1800,Categoria.Bebidas),
+            new Producto("Pepsi",1800,Categoria.Bebidas),
             new Producto("Salame Paladini",11000,Categoria.Fiambres),
-            new Producto("Papa",1000,Categoria.Verduras)
+            new Producto("Queso",7000,Categoria.Fiambres),
+            new Producto("Atun",1000,Categoria.NoPerecedero),
+            new Producto("Papa",1000,Categoria.Verduras),
+            new Producto("Banana",1000,Categoria.NoPerecedero)
         };
     }
 
@@ -34,6 +38,6 @@ public class ProductoRepositorio : IProductoRepositorio
         return productos.Find(p => p.Nombre == nombre);
     }
 
-  
+
 
 }

@@ -2,7 +2,7 @@ using Moq;
 
 namespace GestionTienda.Tests;
 
-public class TiendaTest:IClassFixture<TiendaFixture>
+public class TiendaTest : IClassFixture<TiendaFixture>
 {
     private readonly TiendaFixture _fixture;
 
@@ -20,6 +20,7 @@ public class TiendaTest:IClassFixture<TiendaFixture>
 
         var productoBuscado = _fixture.Tienda.BuscarProducto("Arroz");
 
+        Assert.NotNull(productoBuscado);
         Assert.Equal(productoNuevo, productoBuscado);
     }
 
@@ -30,6 +31,7 @@ public class TiendaTest:IClassFixture<TiendaFixture>
 
         var productoBuscado = _fixture.Tienda.BuscarProducto("Coca cola");
 
+        Assert.NotNull(productoBuscado);
         Assert.Equal(CocaCola.Nombre, productoBuscado.Nombre);
         Assert.Equal(CocaCola.Precio, productoBuscado.Precio);
         Assert.Equal(CocaCola.Categoria, productoBuscado.Categoria);
@@ -38,7 +40,7 @@ public class TiendaTest:IClassFixture<TiendaFixture>
     [Fact]
     public void EliminarProducto()
     {
-        string nombre = "Coca cola";
+        string nombre = "Salame Paladini";
         int cantidadElimnados = _fixture.Tienda.EliminarProducto(nombre);
         Assert.Equal(1, cantidadElimnados);
     }
@@ -48,15 +50,28 @@ public class TiendaTest:IClassFixture<TiendaFixture>
     {
 
         double precioNuevo = 1500;
-        string nombreProducto = "Arroz";
+        string nombreProducto = "Papa";
         _fixture.Tienda.ModificarPrecio(nombreProducto, precioNuevo);
 
         var productoModificado = _fixture.Tienda.BuscarProducto(nombreProducto);
         double precioActual = productoModificado.Precio;
 
+        Assert.NotNull(productoModificado);
         Assert.Equal(precioNuevo, precioActual);
     }
 
+    [Fact]
+    public void Aplicar_descuento()
+    {
+        string nombre = "Leche LaSerenisima";
+        int descuento = 10;
+        _fixture.Tienda.Aplicar_descuento(nombre, descuento);
+
+        double precioEsperado = 1620;
+        double precioActual = _fixture.Tienda.BuscarProducto(nombre).Precio;
+
+        Assert.Equal(precioEsperado, precioActual);
+    }
 
     [Fact]
     public void AgregarProducto_Exception()
@@ -110,7 +125,7 @@ public class TiendaTest:IClassFixture<TiendaFixture>
 
         // Assert
 
-        double precioEsperado = 1800 - (1800*descuento) / 100;
+        double precioEsperado = 1800 - (1800 * descuento) / 100;
         Assert.Equal(precioEsperado, mockProducto.Object.Precio);
         mockProducto.Verify(p => p.ModificarPrecio(precioEsperado), Times.Once);
     }
@@ -129,26 +144,27 @@ public class TiendaTest:IClassFixture<TiendaFixture>
 
         mockRepositorio.Setup(r => r.AgregarProducto(It.IsAny<IProducto>())).
                         Callback<IProducto>(producto => productos.Add(producto));
-        
+
         mockRepositorio.Setup(r => r.BuscarProducto(It.IsAny<string>()))
                         .Returns<string>(nombre => productos.Find(p => p.Nombre == nombre));
-    
+
 
         var tienda = new Tienda(mockRepositorio.Object);
         tienda.AgregarProducto(mockProducto.Object);
 
         var productoAgregado = tienda.BuscarProducto("Pepsi");
 
-        Assert.Equal(mockProducto.Object,productoAgregado);
+        Assert.Equal(mockProducto.Object, productoAgregado);
+
     }
 
     [Fact]
     public void EliminarProducto_UtilizandoMock()
     {
-        
+
         var productos = new List<IProducto>()
         {
-           
+
             new Producto("Coca cola",1800,Categoria.Bebidas),
             new Producto("Leche LaSerenisima",1200,Categoria.Lacteos),
             new Producto("Yogur",900,Categoria.Lacteos),
@@ -158,15 +174,77 @@ public class TiendaTest:IClassFixture<TiendaFixture>
 
         mockRepositorio.Setup(r => r.EliminarProducto(It.IsAny<string>())).
                         Returns<string>(nombre => productos.RemoveAll(p => p.Nombre == nombre));
-    
+
 
         string nombre = "Yogur";
         var tienda = new Tienda(mockRepositorio.Object);
         int cantidadEliminado = tienda.EliminarProducto(nombre);
 
-        Assert.Equal(1,cantidadEliminado);
+        Assert.Equal(1, cantidadEliminado);
     }
 
+    [Fact]
+    public void Calcular_total_carrito_SinDescuento()
+    {
+        var carrito = new List<string>()
+        {
+            "Coca cola",
+            "Yogur",
+        };
 
+        double totalActual = _fixture.Tienda.Calcular_total_carrito(carrito);
+        double totalEsperado = 2700;
 
+        Assert.Equal(totalEsperado, totalActual);
+    }
+
+    [Fact]
+    public void Calcular_total_carrito_ConDescuento()
+    {
+        var carrito = new List<string>()
+        {
+            "Coca cola",
+            "Yogur",
+            "Atun"
+        };
+
+        foreach (var nombre in carrito)
+        {
+            _fixture.Tienda.Aplicar_descuento(nombre, 10);
+        }
+
+        double descuentoCalculado = _fixture.Tienda.Calcular_total_carrito(carrito);
+        double descuentoEsperado = 3330;
+
+        Assert.Equal(descuentoEsperado, descuentoCalculado);
+
+    }
+
+    [Fact]
+    public void IntegracionTienda()
+    {
+
+        var carrito = new List<string>()
+        {
+            "Pepsi",
+            "Queso",
+            "Pasta de mani",
+            "Manzana",
+        };
+
+        _fixture.Tienda.AgregarProducto(new Producto("Pasta de mani", 2200, Categoria.NoPerecedero));
+        _fixture.Tienda.AgregarProducto(new Producto("Manzana", 1000, Categoria.Verduras));
+
+        foreach (var nombre in carrito)
+        {
+            _fixture.Tienda.Aplicar_descuento(nombre, 10);
+        }
+
+        _fixture.Tienda.EliminarProducto("Manzana");
+
+        double descuentoCalculado = _fixture.Tienda.Calcular_total_carrito(carrito);
+        double descuentoEsperado = 9900;
+
+        Assert.Equal(descuentoEsperado, descuentoCalculado);
+    }
 }

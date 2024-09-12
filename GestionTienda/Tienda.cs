@@ -54,7 +54,7 @@ public class Tienda
     {
         try
         {
-            var producto = productoRepositorio.BuscarProducto(nombre);
+            var producto = BuscarProducto(nombre);
             if (nuevoPrecio > 0)
             {
                 producto.ModificarPrecio(nuevoPrecio);
@@ -97,10 +97,10 @@ public class Tienda
     {
         try
         {
-            var producto = productoRepositorio.BuscarProducto(nombre);
+            var producto = BuscarProducto(nombre);
             if (porcentaje > 0)
             {
-                double nuevoPrecio = producto.Precio - (producto.Precio * porcentaje) / 100;
+                double nuevoPrecio = producto.Precio - ((producto.Precio * porcentaje)/100);
                 producto.ModificarPrecio(nuevoPrecio);
             }
             else
@@ -116,5 +116,25 @@ public class Tienda
         }
     }
 
+    public double Calcular_total_carrito(List<string> carrito)
+    {
+        double total_carrito = 0;
+            foreach (string nombre in carrito)
+            {
+                try
+                {
+                    var producto = BuscarProducto(nombre);
+                    total_carrito += producto.Precio;
+                }
+                catch (System.Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                    continue;
+                }
+            }
+
+        return total_carrito;
+    }
+    
 
 }
