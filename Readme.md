@@ -163,37 +163,37 @@ Test double es un término genérico que engloba todos los tipos de objetos o fu
 
 Comprender estos diferentes tipos de test doubles ayuda a elegir la herramienta adecuada para sus necesidades de pruebas. Cada tipo tiene un propósito específico y se puede usar para aislar la unidad bajo prueba, controlar su entorno y verificar su comportamiento.
 
-*¿Qué ventajas ve en el uso de fixtures? ¿Qué enfoque estaría aplicando?*
+**¿Qué ventajas ve en el uso de fixtures? ¿Qué enfoque estaría aplicando?**
 
     Los fixtures se usan para garantizar que el entorno de pruebas esté en un estado conocido y controlado. Ofrece varias ventajas, especialmente cuando se requiere preparar un entorno específico y reproducible antes de ejecutar un conjunto de pruebas. Las fixtures son datos, configuraciones o estados predefinidos que ayudan a garantizar que las pruebas sean consistentes y confiables.
 
-    Ventajas del uso de fixtures:
-        - Reutilización del código de prueba: Los fixtures permiten definir datos de prueba comunes o configuraciones del entorno que pueden ser reutilizados en múltiples pruebas, evitando la repetición de código.
+Ventajas del uso de fixtures:
+- Reutilización del código de prueba: Los fixtures permiten definir datos de prueba comunes o configuraciones del entorno que pueden ser reutilizados en múltiples pruebas, evitando la repetición de código.
 
-        - Entorno de pruebas consistente: Garantizan que cada prueba comience desde el mismo estado inicial. Esto ayuda a evitar errores que surgen por efectos colaterales de pruebas anteriores.
+- Entorno de pruebas consistente: Garantizan que cada prueba comience desde el mismo estado inicial. Esto ayuda a evitar errores que surgen por efectos colaterales de pruebas anteriores.
 
-        - Reducción del tiempo de configuración: Automatizan la creación de datos de prueba y la configuración del entorno, lo que ahorra tiempo al no tener que definir estos detalles manualmente para cada prueba individual.
+- Reducción del tiempo de configuración: Automatizan la creación de datos de prueba y la configuración del entorno, lo que ahorra tiempo al no tener que definir estos detalles manualmente para cada prueba individual.
 
-        - Facilitan el mantenimiento de las pruebas: Al centralizar la lógica de configuración y limpieza en un solo lugar, es más fácil actualizar o modificar los datos o el entorno de prueba cuando sea necesario.
-    
-    Enfoque de prueba:
-        El uso de fixtures no está ligado a un enfoque particular de "caja negra" o "caja blanca", ya que se puede aplicar en ambos:
+- Facilitan el mantenimiento de las pruebas: Al centralizar la lógica de configuración y limpieza en un solo lugar, es más fácil actualizar o modificar los datos o el entorno de prueba cuando sea necesario.
 
-        - Caja negra: En las pruebas de caja negra, se suelen usar fixtures para preparar datos de entrada sin preocuparse por la implementación interna. Aquí, los testers definen las fixtures con base en el comportamiento esperado del sistema.
+Enfoque de prueba:
+El uso de fixtures no está ligado a un enfoque particular de "caja negra" o "caja blanca", ya que se puede aplicar en ambos:
 
-        - Caja blanca: En las pruebas de caja blanca, donde los testers tienen conocimiento del código y de su estructura interna, las fixtures pueden configurarse para que correspondan a estados internos específicos del software (por ejemplo, inicializar estructuras de datos o estados particulares del sistema).
+- Caja negra: En las pruebas de caja negra, se suelen usar fixtures para preparar datos de entrada sin preocuparse por la implementación interna. Aquí, los testers definen las fixtures con base en el comportamiento esperado del sistema.
 
-        En el caso del Tp, estaríamos a plicando un enfoque de caja blanca, ya que conociendo el código, el fixture fué creado para responder tanto a funcinalidades superficiales, como a caminos internos del mismo código.
+- Caja blanca: En las pruebas de caja blanca, donde los testers tienen conocimiento del código y de su estructura interna, las fixtures pueden configurarse para que correspondan a estados internos específicos del software (por ejemplo, inicializar estructuras de datos o estados particulares del sistema).
 
-_Explique los conceptos de Setup y Teardown en testing._
+En el caso del Tp, estaríamos a plicando un enfoque de caja blanca, ya que conociendo el código, el fixture fué creado para responder tanto a funcinalidades superficiales, como a caminos internos del mismo código.
 
-    - Setup: Es el proceso de inicialización que ocurre antes de que se ejecute cada prueba. Durante el setup, se configura el entorno de prueba, se inicializan objetos, se cargan fixtures necesarias o se establecen las condiciones iniciales. Por ejemplo, si se está probando una base de datos, el setup podría crear una conexión a la base de datos y cargar datos de prueba.
+__Explique los conceptos de Setup y Teardown en testing.__
 
-    - Teardown: Es el proceso que ocurre después de que la prueba ha sido ejecutada. Su propósito es limpiar el entorno de prueba, liberando recursos, desconectando conexiones o eliminando cualquier rastro dejado por la prueba. Por ejemplo, si la prueba modifica archivos o bases de datos, el teardown puede eliminar esos archivos o restaurar la base de datos a su estado original.
+- Setup: Es el proceso de inicialización que ocurre antes de que se ejecute cada prueba. Durante el setup, se configura el entorno de prueba, se inicializan objetos, se cargan fixtures necesarias o se establecen las condiciones iniciales. Por ejemplo, si se está probando una base de datos, el setup podría crear una conexión a la base de datos y cargar datos de prueba.
 
-    El ciclo de setup y teardown es esencial para mantener las pruebas independientes entre sí, asegurando que el estado de una prueba no interfiera en otras.
+- Teardown: Es el proceso que ocurre después de que la prueba ha sido ejecutada. Su propósito es limpiar el entorno de prueba, liberando recursos, desconectando conexiones o eliminando cualquier rastro dejado por la prueba. Por ejemplo, si la prueba modifica archivos o bases de datos, el teardown puede eliminar esos archivos o restaurar la base de datos a su estado original.
 
-*¿Puede describir una situación de desarrollo para este caso en donde se plantee pruebas de integración ascendente? Describa la situación.*
+El ciclo de setup y teardown es esencial para mantener las pruebas independientes entre sí, asegurando que el estado de una prueba no interfiera en otras.
 
-    Para este caso y de la manera en que hicimos el código (producto -> Repo de Producto -> Tienda) podríamos plantear la prueba de integracíon de manera ascendente debido a que la parte crítica se encuentra en Producto (en el caso de modificar precio) y en ProductoRespositorio (para las demas funcionalidades), entonces sería prudente probar el correcto funcionamiento desde ese punto crítico e ir escalando. El ejemplo más claro sería el de "modificarPrecio" ya que si lo hacemos de manera descendente y tenemos errores con esa funcionalidad en todos los objetos, a medida que vayamos integrando y resolviendo errores en cada nivel no sabremos si el error lo tiene el objeto que integro o la forma en que se integran. En cambio de manera ascendente a medida que integremos y aparezcan errores sabemos que el error lo tiene el objeto que llama al otro.
+**¿Puede describir una situación de desarrollo para este caso en donde se plantee pruebas de integración ascendente? Describa la situación.**
+
+Para este caso y de la manera en que hicimos el código (producto -> Repo de Producto -> Tienda) podríamos plantear la prueba de integracíon de manera ascendente debido a que la parte crítica se encuentra en Producto (en el caso de modificar precio) y en ProductoRespositorio (para las demas funcionalidades), entonces sería prudente probar el correcto funcionamiento desde ese punto crítico e ir escalando. El ejemplo más claro sería el de "modificarPrecio" ya que si lo hacemos de manera descendente y tenemos errores con esa funcionalidad en todos los objetos, a medida que vayamos integrando y resolviendo errores en cada nivel no sabremos si el error lo tiene el objeto que integro o la forma en que se integran. En cambio de manera ascendente a medida que integremos y aparezcan errores sabemos que el error lo tiene el objeto que llama al otro.
         
