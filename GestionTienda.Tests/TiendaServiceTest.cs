@@ -1,12 +1,9 @@
-using Moq;
-
 namespace GestionTienda.Tests;
-
-public class TiendaTest : IClassFixture<TiendaFixture>
+public class TiendaServiceTest : IClassFixture<TiendaFixture>
 {
     private readonly TiendaFixture _fixture;
 
-    public TiendaTest(TiendaFixture fixture)
+    public TiendaServiceTest(TiendaFixture fixture)
     {
         _fixture = fixture;
     }
@@ -114,10 +111,10 @@ public class TiendaTest : IClassFixture<TiendaFixture>
         mockProducto.Setup(p => p.ModificarPrecio(It.IsAny<double>()))
                        .Callback<double>(nuevoPrecio => mockProducto.Setup(p => p.Precio).Returns(nuevoPrecio));
 
-        var mockRepositorio = new Mock<IProductoRepositorio>();
+        var mockRepositorio = new Mock<IProductoRepository>();
         mockRepositorio.Setup(r => r.BuscarProducto("Pepsi")).Returns(mockProducto.Object);
 
-        var tienda = new Tienda(mockRepositorio.Object);
+        var tienda = new TiendaService(mockRepositorio.Object);
 
         // Act
         int descuento = 10;
@@ -140,7 +137,7 @@ public class TiendaTest : IClassFixture<TiendaFixture>
         mockProducto.Setup(p => p.Categoria).Returns(Categoria.Bebidas);
 
         var productos = new List<IProducto>();
-        var mockRepositorio = new Mock<IProductoRepositorio>();
+        var mockRepositorio = new Mock<IProductoRepository>();
 
         mockRepositorio.Setup(r => r.AgregarProducto(It.IsAny<IProducto>())).
                         Callback<IProducto>(producto => productos.Add(producto));
@@ -149,7 +146,7 @@ public class TiendaTest : IClassFixture<TiendaFixture>
                         .Returns<string>(nombre => productos.Find(p => p.Nombre == nombre));
 
 
-        var tienda = new Tienda(mockRepositorio.Object);
+        var tienda = new TiendaService(mockRepositorio.Object);
         tienda.AgregarProducto(mockProducto.Object);
 
         var productoAgregado = tienda.BuscarProducto("Pepsi");
@@ -170,14 +167,14 @@ public class TiendaTest : IClassFixture<TiendaFixture>
             new Producto("Yogur",900,Categoria.Lacteos),
         };
 
-        var mockRepositorio = new Mock<IProductoRepositorio>();
+        var mockRepositorio = new Mock<IProductoRepository>();
 
         mockRepositorio.Setup(r => r.EliminarProducto(It.IsAny<string>())).
                         Returns<string>(nombre => productos.RemoveAll(p => p.Nombre == nombre));
 
 
         string nombre = "Yogur";
-        var tienda = new Tienda(mockRepositorio.Object);
+        var tienda = new TiendaService(mockRepositorio.Object);
         int cantidadEliminado = tienda.EliminarProducto(nombre);
 
         Assert.Equal(1, cantidadEliminado);

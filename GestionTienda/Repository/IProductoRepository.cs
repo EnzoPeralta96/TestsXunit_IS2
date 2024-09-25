@@ -1,5 +1,5 @@
 namespace GestionTienda;
-public interface IProductoRepositorio
+public interface IProductoRepository
 {
     List<IProducto> obtenerProductos();
     void AgregarProducto(IProducto producto);
